@@ -47,19 +47,23 @@
  	}
  }
 
+
 /**
- * Priority class
+ * BaseAttribute class
  * 
- * This defines the priority of a task
+ * This defines an attribute of a task
+ * It could be priority, status.
  */
- class Priority {
+ class BaseAttribute {
  	#name = null;
  	#value = 0;
+ 	#attrtype = null;
  	#style = null;
 
- 	constructor(name, value, style) {
+ 	constructor(name, value, attrtype, style) {
  		this.#name = name;
  		this.#value = value;
+ 		this.#attrtype = attrtype;
  		this.#style = style;
  	}
 
@@ -68,7 +72,7 @@
 	*/
 
 	/**
-	 * Get the name of the priority.
+	 * Get the name of the attribtue.
 	 * name is of type String
 	 */
 	getName() {
@@ -80,19 +84,43 @@
 	*/
 
 	/**
-	 * Get the value of the priority.
+	 * Get the value of the attribute.
 	 * value is of type Number
 	 */
 	getValue() {
 		return this.#value;
 	};
+
+	/*
+		Type
+	*/
+
+	/**
+	 * Get the type of the attribute.
+	 * type is of type String
+	 */
+	getType() {
+		return this.#attrtype;
+	};
+ }
+
+/**
+ * BasePriority class
+ * 
+ * This defines the priority of a task
+ */
+ class BasePriority extends BaseAttribute {
+ 	constructor(name, value, style) {
+ 		const attrtype = "priority";
+ 		super(name, value, attrtype, style);
+ 	}
  }
 
 /**
  * HighPriority class
  * 
  */
- class HighPriority extends Priority {
+ class HighPriority extends BasePriority {
  	constructor() {
  		const name = "High"
  		const value = 300
@@ -114,7 +142,7 @@
  * MedPriority class
  * 
  */
- class MedPriority extends Priority {
+ class MedPriority extends BasePriority {
  	constructor() {
  		const name = "Med"
  		const value = 200
@@ -136,7 +164,7 @@
  * LowPriority class
  * 
  */
- class LowPriority extends Priority {
+ class LowPriority extends BasePriority {
  	constructor() {
  		const name = "Low"
  		const value = 100
