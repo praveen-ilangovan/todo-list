@@ -21,6 +21,22 @@
 */
 
 /**
+ * Style class
+ * 
+ * A class to hold the css elements. This class
+ * takes care of the styling for an item in the UI
+ */
+ class Style {
+ 	constructor(color, bgColor, fontFamily, fontSize, fontWeight) {
+ 		this.color = color;
+ 		this.bgColor = bgColor;
+ 		this.fontFamily = fontFamily;
+ 		this.fontSize = fontSize;
+ 		this.fontWeight = fontWeight;
+ 	}
+ }
+
+/**
  * Task class
  * 
  * Task is the todo item. It has a text explaining what the
