@@ -26,9 +26,24 @@
  * A class to hold the user information
  */
  class User {
- 	constructor(name) {
- 		this.name = name;
+
+ 	// Static object to hold a list of all users.
+ 	static #USERS = {};
+
+ 	/**
+ 	 * Checks if already an instance exists before
+ 	 * creating a new one.
+ 	 */
+ 	static GetUser(name) {
+ 		if (name in User.#USERS === false) {
+ 			User.#USERS[name] = new User(name);
+ 		}
+ 		return User.#USERS[name];
  	}
+
+  	constructor(name) {
+ 		this.name = name;
+ 	};
  }
 
 /**
@@ -38,12 +53,38 @@
  * takes care of the styling for an item in the UI
  */
  class Style {
+ 	#color;
+ 	#bgColor;
+ 	#fontFamily;
+ 	#fontSize;
+ 	#fontWeight;
+
  	constructor(color, bgColor, fontFamily, fontSize, fontWeight) {
- 		this.color = color;
- 		this.bgColor = bgColor;
- 		this.fontFamily = fontFamily;
- 		this.fontSize = fontSize;
- 		this.fontWeight = fontWeight;
+ 		this.#color = color;
+ 		this.#bgColor = bgColor;
+ 		this.#fontFamily = fontFamily;
+ 		this.#fontSize = fontSize;
+ 		this.#fontWeight = fontWeight;
+ 	}
+
+ 	get color() {
+ 		return this.#color;
+ 	}
+
+  	get bgColor() {
+ 		return this.#bgColor;
+ 	}
+
+  	get fontFamily() {
+ 		return this.#fontFamily;
+ 	}
+
+ 	get fontSize() {
+ 		return this.#fontSize;
+ 	}
+
+  	get fontWeight() {
+ 		return this.#fontWeight;
  	}
  }
 
@@ -101,6 +142,14 @@
 	 */
 	getType() {
 		return this.#attrtype;
+	};
+
+	/**
+	 * Get the style of the attribute.
+	 * is of type String
+	 */
+	getStyle() {
+		return this.#style;
 	};
  }
 
@@ -182,7 +231,7 @@
  	}
  }
 
-/**
+ /**
  * Task class
  * 
  * Task is the todo item. It has a text explaining what the
