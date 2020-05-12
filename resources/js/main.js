@@ -74,3 +74,31 @@ class TaskManager {
 		localStorage.removeItem(uid);
 	}
 }
+
+
+// 
+function addItem(e) {
+
+	if (!addTaskTextInput.value) {
+		const errorMsg = document.getElementById("addTaskAlert");
+		errorMsg.classList.remove("d-none");
+
+		setTimeout(function() {
+			errorMsg.classList.add("d-none");
+		}, 2000);
+
+		return;
+	}
+	console.log(addTaskPriorityOption.value);
+
+	TaskManager.AddTask(addTaskTextInput.value, addTaskPriorityOption.value);
+}
+
+
+// Elements
+const addTaskTextInput = document.getElementById("addTaskTextInput");
+const addTaskPriorityOption = document.getElementById("addTaskPriorityOption");
+const addTaskButton = document.getElementById("addTaskButton");
+
+// Event handlers
+addTaskButton.addEventListener("click", addItem);

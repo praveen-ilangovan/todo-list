@@ -12,14 +12,16 @@
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
 	<!-- Material Design Bootstrap -->
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.16.0/css/mdb.min.css" rel="stylesheet">
+
+	<link rel="stylesheet" type="text/css" href="resources/css/style.css">
 </head>
 <body>
 
-	<nav class="navbar">
+	<nav class="navbar mb-5">
 		<a class="navbar-brand">Todo's</a>
 
 		<form class="d-flex justify-content-between align-items-center">
-			<a href="" title=""><i class="fas fa-plus mr-4"></i></a>
+			<a href="" title="" data-toggle="modal" data-target="#addTaskModal"><i class="fas fa-plus mr-4"></i></a>
 
 			<input class="form-control form-control-sm" type="search" placeholder="Search" aria-label="Search">
 		</form>
@@ -28,9 +30,112 @@
 
 	<!-- Top container -->
 	<div class="container">
+		<div class="priority-container d-lg-flex justify-content-between">
+			<div class="high-priority-container mb-3">
+				<h3>High</h3>
+
+				<div class="card card-body alert-danger mb-3">
+					
+				</div>
+
+				<div class="card card-body alert-danger mb-3">
+					
+				</div>
+
+				<div class="card card-body alert-danger mb-3">
+					
+				</div>
+
+				<div class="card card-body alert-danger mb-3">
+					
+				</div>
+
+			</div>
+
+			<div class="med-priority-container mb-3">
+				<h3>Med</h3>
+
+				<div class="card card-body alert-warning mb-3">
+					
+				</div>
+
+				<div class="card card-body alert-warning mb-3">
+					
+				</div>
+
+				<div class="card card-body alert-warning mb-3">
+					
+				</div>
+			</div>
+
+			<div class="low-priority-container mb-3">
+				<h3>Low</h3>
+
+				<div class="card card-body alert-success mb-3">
+					
+				</div>
+
+				<div class="card card-body mb-3">
+					
+				</div>
+
+				<div class="card card-body mb-3">
+					
+				</div>
+
+				<div class="card card-body mb-3">
+					
+				</div>
+
+				<div class="card card-body mb-3">
+					
+				</div>
+			</div>
+		</div>
 
 	</div>
 
+	<!-- Modal -->
+
+	<!-- Add task -->
+	<div class="modal fade" id="addTaskModal" tabindex="-1" role="dialog" aria-labelledby="addTaskModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="addTaskModalLabel">Add Task</h5>
+
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+
+				<div class="modal-body">
+					<form action="index_submit" method="get" accept-charset="utf-8">
+
+						<div id="addTaskAlert" class="alert alert-danger d-none">
+							<a href="#" class="close" data-dismiss="alert">&times;</a>
+							<strong>Error!</strong> Please describe your task.
+						</div>
+
+						<input id="addTaskTextInput" class="form-control form-control-sm mb-3" type="text" name="" placeholder="What is your task?">
+
+						<div class="form-group my-3">
+							<label for="exampleFormControlSelect1">Set Priority:</label>
+							<select class="form-control form-control-sm" id="addTaskPriorityOption">
+								<option>High</option>
+								<option>Med</option>
+								<option>Low</option>
+							</select>
+						</div>
+					</form>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-sm btn-primary" id="addTaskButton">Add</button>
+				</div>
+			</div>
+		</div>
+	</div>
 
 	<!-- MDB JS and JQuery -->
 	<!-- JQuery -->

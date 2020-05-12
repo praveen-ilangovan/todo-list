@@ -1,0 +1,15 @@
+.high-priority-container {
+  flex-basis: 30%; }
+
+.med-priority-container {
+  flex-basis: 30%; }
+
+.low-priority-container {
+  flex-basis: 30%; }
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0; }
+
+/*# sourceMappingURL=style.css.map */
