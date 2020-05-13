@@ -187,12 +187,27 @@ function updateTask(e) {
 		textBox.style.display = "block";
 		editBox.style.display = "none";
 	} else {
-		const container = topParent.parentElement;
-		container.removeChild(topParent);
-
+		deleteElement(topParent);
 		createTaskElement(updatedTask);
 	}
 
+}
+
+function deleteElement(element) {
+	const container = element.parentElement;
+	container.removeChild(element);
+}
+
+function deleteTask(e) {
+	let topParent = e.target.parentElement.parentElement.parentElement.parentElement;
+	let taskUid = topParent.id.slice(5, topParent.id.length);
+
+	TaskManager.RemoveTask(taskUid);
+	deleteElement(topParent);
+}
+
+function toggleDeleteOption(e) {
+	e.target.children[0].children[1].style.display = e.type === "mouseenter" ? "block" : "none";
 }
 
 function createTaskElement(task) {
@@ -256,7 +271,8 @@ function createTaskElement(task) {
 	rowBox.appendChild(leftColBox);
 
 	let rightColBox = document.createElement("div");
-	rightColBox.className = "col-1"
+	rightColBox.className = "col-1";
+	rightColBox.style.display = "none";
 
 	let delLink = document.createElement("a");
 	delLink.className = "close";
@@ -343,9 +359,15 @@ function createTaskElement(task) {
 	editBox.style.display = "none";
 
 	// Add event handlers
+	delLink.addEventListener("click", deleteTask);
 	cancelButton.addEventListener("click", cancelEdit);
 	updateButton.addEventListener("click", updateTask);
+
+	textBox.addEventListener("mouseenter", toggleDeleteOption);
+	textBox.addEventListener("mouseleave", toggleDeleteOption);
+
 	taskBox.addEventListener("dblclick", taskDoubleClicked);
+
 
 	parent.appendChild(taskBox);
 }
