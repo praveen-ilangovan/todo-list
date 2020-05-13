@@ -183,7 +183,7 @@ function updateTask(e) {
 
 	// if priority and status hasn't changed just update the text.
 	if (oldPriority === updatedPriority && oldStatus === updatedStatus) {
-		textBox.children[0].textContent = updatedText;
+		textBox.children[0].children[0].textContent = updatedText;
 		textBox.style.display = "block";
 		editBox.style.display = "none";
 	} else {
@@ -192,7 +192,6 @@ function updateTask(e) {
 
 		createTaskElement(updatedTask);
 	}
-
 
 }
 
@@ -237,6 +236,13 @@ function createTaskElement(task) {
 	// Create the text box container
 	let textBox = document.createElement("div");
 	textBox.className = "task-text";
+	textBox.style.display = "block";
+
+	let rowBox = document.createElement("div");
+	rowBox.className = "row";
+
+	let leftColBox = document.createElement("div");
+	leftColBox.className = "col-11"
 
 	// Create a new p element
 	let p = document.createElement("p");
@@ -246,7 +252,20 @@ function createTaskElement(task) {
 	let tnode = document.createTextNode(task.text);
 
 	p.appendChild(tnode);
-	textBox.appendChild(p);
+	leftColBox.appendChild(p);
+	rowBox.appendChild(leftColBox);
+
+	let rightColBox = document.createElement("div");
+	rightColBox.className = "col-1"
+
+	let delLink = document.createElement("a");
+	delLink.className = "close";
+	delLink.innerHTML = "&times;";
+
+	rightColBox.appendChild(delLink);
+	rowBox.appendChild(rightColBox);
+
+	textBox.appendChild(rowBox);
 	taskBox.appendChild(textBox);
 
 	// Create the text box container
