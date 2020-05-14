@@ -254,10 +254,10 @@ function createTaskElement(task) {
 	textBox.style.display = "block";
 
 	let rowBox = document.createElement("div");
-	rowBox.className = "row";
+	rowBox.className = "d-flex justify-content-between";
 
 	let leftColBox = document.createElement("div");
-	leftColBox.className = "col-11"
+	leftColBox.className = "mx-2"
 
 	// Create a new p element
 	let p = document.createElement("p");
@@ -271,7 +271,7 @@ function createTaskElement(task) {
 	rowBox.appendChild(leftColBox);
 
 	let rightColBox = document.createElement("div");
-	rightColBox.className = "col-1";
+	rightColBox.className = "";
 	rightColBox.style.display = "none";
 
 	let delLink = document.createElement("a");
