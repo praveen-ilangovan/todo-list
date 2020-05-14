@@ -1,4 +1,4 @@
-import { Task, TaskManager } from './modules/todo.js';
+import { Priority, Status, Task, TaskManager } from './modules/todo.js';
 
 // 
 function addTask(e) {
