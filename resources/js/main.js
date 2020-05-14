@@ -380,6 +380,17 @@ function populateTasks() {
 	}
 }
 
+function filterTasks(e) {
+	if (e.type == "keypress" && e.key === "Enter") {
+		e.preventDefault();
+		console.log(e.target);
+	} else if (e.type == "input") {
+		if (searchBar.value === "") {
+			console.log("Text cleared");
+		}
+	}
+}
+
 
 // Elements
 const addTaskTextInput = document.getElementById("addTaskTextInput");
@@ -394,8 +405,13 @@ const doneHighPriorityContents = document.getElementById("doneHighPriorityConten
 const doneMedPriorityContents = document.getElementById("doneMedPriorityContents");
 const doneLowPriorityContents = document.getElementById("doneLowPriorityContents");
 
+const searchBar = document.getElementById("searchBar");
+
 // Event handlers
 addTaskButton.addEventListener("click", addTask);
+
+searchBar.addEventListener("input", filterTasks);
+searchBar.addEventListener("keypress", filterTasks);
 
 // Necessary to initialize all popovers to work
 $(function () {
