@@ -11,6 +11,8 @@ class Priority {
 	static HIGH = "High";
 	static MED  = "Med";
 	static LOW  = "Low";
+
+	static VALUES = [Priority.HIGH, Priority.MED, Priority.LOW];
 }
 
 /**
@@ -21,6 +23,8 @@ class Status {
 	static TODO = "Todo";
 	static INPROGRESS  = "InProgress";
 	static DONE  = "Done";
+
+	static VALUES = [Status.TODO, Status.INPROGRESS, Status.DONE];
 }
 
 /**

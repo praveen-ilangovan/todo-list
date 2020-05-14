@@ -1,5 +1,199 @@
 import { Priority, Status, Task, TaskManager } from './modules/todo.js';
 
+/**
+ * Main function that receives a task and creates a task element
+ *
+ * @param {Task} task
+ */
+function createTaskElement(task) {
+
+	// Get the priority and status
+	let priority = task.priority.toLowerCase();
+	let status = task.status.toLowerCase();
+
+	// Define the background color and parent container to add this element to
+	// based on their priority and status
+
+	// bg : 
+	// 		stauts done: alert-secondary
+	// 		priortiy high: alert-danger
+	// 				 med: alert-warning
+	// 				 low: alert-success
+	let bg = "alert-danger";
+	let parent = activeHighPriorityContents;
+	if (status === "done") {
+		bg = "alert-secondary";
+		parent = doneHighPriorityContents;
+	}
+
+	if (priority === "med") {
+		bg = "alert-warning";
+		parent = activeMedPriorityContents;
+
+		if (status === "done") {
+			bg = "alert-secondary";
+			parent = doneMedPriorityContents;
+		}
+
+	} else if (priority === "low") {
+		bg = "alert-success";
+		parent = activeLowPriorityContents;	
+
+		if (status === "done") {
+			bg = "alert-secondary";
+			parent = doneLowPriorityContents;
+		}
+	}
+
+	// Create the top div container
+	// <div class="card card-body alert-danger task-box mb-3">
+	const taskBoxId = "task-" + task.uid
+	let taskBox = document.createElement("div");
+	taskBox.className = "card card-body task-box mb-3";
+	taskBox.id = taskBoxId
+	taskBox.classList.add(bg);
+
+	// If the task is inprogress
+	if (status === "inprogress") {
+		taskBox.classList.add("task-inprogress");
+	}
+
+	// Create the text box container
+	// <div class="task-text">
+	let textBox = document.createElement("div");
+	textBox.className = "task-text";
+	textBox.style.display = "block";
+
+	// <div class="d-flex justify-content-between">
+	let rowBox = document.createElement("div");
+	rowBox.className = "d-flex justify-content-between";
+
+	// <div class="mx-2">
+	let leftColBox = document.createElement("div");
+	leftColBox.className = "mx-2"
+
+	// Create a new p element
+	// <p class="card-text">
+	let p = document.createElement("p");
+	p.className = "card-text";
+
+	// Add a text node
+	let tnode = document.createTextNode(task.text);
+
+	p.appendChild(tnode);
+	leftColBox.appendChild(p);
+	rowBox.appendChild(leftColBox);
+
+	// <div>
+	let rightColBox = document.createElement("div");
+	rightColBox.className = "";
+	rightColBox.style.display = "none";
+
+	// <a href="" class="close">&times;</a>
+	let delLink = document.createElement("a");
+	delLink.className = "close";
+	delLink.innerHTML = "&times;";
+
+	rightColBox.appendChild(delLink);
+	rowBox.appendChild(rightColBox);
+
+	textBox.appendChild(rowBox);
+	taskBox.appendChild(textBox);
+	// End of textBox div
+
+	// Create the Edit box container
+	// <div class="edit-task">
+	let editBox = document.createElement("div");
+	editBox.className = "edit-task";
+	// Turn off the display of this editBox. Gets turned on when the task is double clicked.
+	editBox.style.display = "none";
+
+	// Create an input
+	// <input class="form-control form-control-sm mb-3" type="text" name="">
+	let textInput = document.createElement("input");
+	textInput.className = "form-control form-control-sm mb-3";
+	textInput.setAttribute("type", "text");
+	editBox.appendChild(textInput);
+
+	// Add priority and status combo box
+	for (let attribute of ["Priority", "Status"]) {
+		// <div class="form-group my-3">
+		let box = document.createElement("div");
+		box.className = "form-group my-3";
+
+		// <label class="form-label-font">Change Priority:</label>
+		let label = document.createElement("label");
+		label.innerHTML = "Change " + attribute;
+		label.className = "form-label-font";
+
+		// <select class="form-control form-control-sm">
+		let cbox = document.createElement("select");
+		cbox.className = "form-control form-control-sm";
+
+		// <option>High</option>
+		let values = attribute === "Priority" ? Priority.VALUES : Status.VALUES
+		for (const i of values) {
+			let option = document.createElement("option");
+			option.innerHTML = i;
+			cbox.appendChild(option);
+		}
+
+		box.appendChild(label);
+		box.appendChild(cbox);
+		editBox.appendChild(box);
+	}
+
+	// Buttons
+	// <div class="btn-block pull-right"> !This doesn't seem to have any effect. Investigate
+	let buttonBox = document.createElement("div");
+	buttonBox.className = "btn-block pull-right";
+
+	// <button type="button" class="btn btn-sm btn-danger">Cancel</button>
+	let cancelButton = document.createElement("button");
+	cancelButton.className = "btn btn-sm btn-danger";
+	cancelButton.innerHTML = "Cancel";
+	// <button type="button" class="btn btn-sm btn-success">Update</button>
+	let updateButton = document.createElement("button");
+	updateButton.className = "btn btn-sm btn-success";
+	updateButton.innerHTML = "Update";
+
+	buttonBox.appendChild(cancelButton);
+	buttonBox.appendChild(updateButton);
+
+	editBox.appendChild(buttonBox);
+	taskBox.appendChild(editBox);
+	// End of Edit Box
+
+	// Add event handlers
+	delLink.addEventListener("click", deleteTask);
+	cancelButton.addEventListener("click", cancelEdit);
+	updateButton.addEventListener("click", updateTask);
+	textBox.addEventListener("mouseenter", toggleDeleteOption);
+	textBox.addEventListener("mouseleave", toggleDeleteOption);
+	taskBox.addEventListener("dblclick", taskDoubleClicked);
+
+	// Make sure the task is hidden if the search field has some text matching
+	// the contents
+	taskBox.style.display = "block";
+	const searchBarText = searchBar.value.toLowerCase();
+	if (searchBarText && !task.text.toLowerCase().includes(searchBarText)) {
+		taskBox.style.display = "none";
+	}
+
+	parent.appendChild(taskBox);
+}
+
+/**
+ * Deletes an element from the webpage
+ *
+ * @param {element} DOMElement
+ */
+function deleteElement(element) {
+	// Grab the element's parent and remove this element from its child list.
+	const container = element.parentElement;
+	container.removeChild(element);
+}
+
 // 
 function addTask(e) {
 
@@ -98,10 +292,7 @@ function updateTask(e) {
 
 }
 
-function deleteElement(element) {
-	const container = element.parentElement;
-	container.removeChild(element);
-}
+
 
 function deleteTask(e) {
 	let topParent = e.target.parentElement.parentElement.parentElement.parentElement;
@@ -113,183 +304,6 @@ function deleteTask(e) {
 
 function toggleDeleteOption(e) {
 	e.target.children[0].children[1].style.display = e.type === "mouseenter" ? "block" : "none";
-}
-
-function createTaskElement(task) {
-
-	let priority = task.priority.toLowerCase();
-	let status = task.status.toLowerCase();
-
-	let bg = "alert-danger";
-	let parent = activeHighPriorityContents;
-	if (status === "done") {
-		bg = "alert-secondary";
-		parent = doneHighPriorityContents;
-	}
-
-	if (priority === "med") {
-		bg = "alert-warning";
-		parent = activeMedPriorityContents;
-
-		if (status === "done") {
-			bg = "alert-secondary";
-			parent = doneMedPriorityContents;
-		}
-
-	} else if (priority === "low") {
-		bg = "alert-success";
-		parent = activeLowPriorityContents;	
-
-		if (status === "done") {
-			bg = "alert-secondary";
-			parent = doneLowPriorityContents;
-		}
-	}
-
-	// Create the top div container
-	const taskBoxId = "task-" + task.uid
-	let taskBox = document.createElement("div");
-	taskBox.className = "card card-body task-box mb-3";
-	taskBox.id = taskBoxId
-	taskBox.classList.add(bg);
-
-	// If the task is inprogress
-	if (status === "inprogress") {
-		taskBox.classList.add("task-inprogress");
-	}
-
-	// Create the text box container
-	let textBox = document.createElement("div");
-	textBox.className = "task-text";
-	textBox.style.display = "block";
-
-	let rowBox = document.createElement("div");
-	rowBox.className = "d-flex justify-content-between";
-
-	let leftColBox = document.createElement("div");
-	leftColBox.className = "mx-2"
-
-	// Create a new p element
-	let p = document.createElement("p");
-	p.className = "card-text";
-
-	// Add a text node
-	let tnode = document.createTextNode(task.text);
-
-	p.appendChild(tnode);
-	leftColBox.appendChild(p);
-	rowBox.appendChild(leftColBox);
-
-	let rightColBox = document.createElement("div");
-	rightColBox.className = "";
-	rightColBox.style.display = "none";
-
-	let delLink = document.createElement("a");
-	delLink.className = "close";
-	delLink.innerHTML = "&times;";
-
-	rightColBox.appendChild(delLink);
-	rowBox.appendChild(rightColBox);
-
-	textBox.appendChild(rowBox);
-	taskBox.appendChild(textBox);
-
-	// Make sure the task is hidden if the search field has some text matching
-	// the contents
-	taskBox.style.display = "block";
-	const searchBarText = searchBar.value.toLowerCase();
-	if (searchBarText && !task.text.toLowerCase().includes(searchBarText)) {
-		taskBox.style.display = "none";
-	}
-
-	// Create the Edit box container
-	let editBox = document.createElement("div");
-	editBox.className = "edit-task";
-
-	// Create an input
-	let textInput = document.createElement("input");
-	textInput.className = "form-control form-control-sm mb-3";
-	textInput.setAttribute("type", "text");
-
-	editBox.appendChild(textInput);
-
-	// Priority Box
-	let priorityBox = document.createElement("div");
-	priorityBox.className = "form-group my-3";
-
-	let priorityLabel = document.createElement("label");
-	priorityLabel.innerHTML = "Change Priority";
-	priorityLabel.className = "form-label-font";
-
-	let priorityCbox = document.createElement("select");
-	priorityCbox.className = "form-control form-control-sm";
-
-	for (let i of ["High", "Med", "Low"]) {
-		let option = document.createElement("option");
-		option.innerHTML = i;
-		priorityCbox.appendChild(option);
-	}
-
-	priorityBox.appendChild(priorityLabel);
-	priorityBox.appendChild(priorityCbox);
-	editBox.appendChild(priorityBox);
-
-
-	// Status Box
-	let statusBox = document.createElement("div");
-	statusBox.className = "form-group my-3";
-
-	let statusLabel = document.createElement("label");
-	statusLabel.innerHTML = "Change Status";
-	statusLabel.className = "form-label-font";
-
-	let statusCbox = document.createElement("select");
-	statusCbox.className = "form-control form-control-sm";
-
-	for (let i of ["Todo", "InProgress", "Done"]) {
-		let option = document.createElement("option");
-		option.innerHTML = i;
-		statusCbox.appendChild(option);
-	}
-
-	statusBox.appendChild(statusLabel);
-	statusBox.appendChild(statusCbox);
-	editBox.appendChild(statusBox);
-
-
-	// Buttons
-	let buttonBox = document.createElement("div");
-	buttonBox.className = "btn-block pull-right";
-
-	let cancelButton = document.createElement("button");
-	cancelButton.className = "btn btn-sm btn-danger";
-	cancelButton.innerHTML = "Cancel";
-	let updateButton = document.createElement("button");
-	updateButton.className = "btn btn-sm btn-success";
-	updateButton.innerHTML = "Update";
-
-	buttonBox.appendChild(cancelButton);
-	buttonBox.appendChild(updateButton);
-
-	editBox.appendChild(buttonBox);
-
-	taskBox.appendChild(editBox);
-
-	// Turn off the display of this editBox.
-	editBox.style.display = "none";
-
-	// Add event handlers
-	delLink.addEventListener("click", deleteTask);
-	cancelButton.addEventListener("click", cancelEdit);
-	updateButton.addEventListener("click", updateTask);
-
-	textBox.addEventListener("mouseenter", toggleDeleteOption);
-	textBox.addEventListener("mouseleave", toggleDeleteOption);
-
-	taskBox.addEventListener("dblclick", taskDoubleClicked);
-
-
-	parent.appendChild(taskBox);
 }
 
 function populateTasks() {
@@ -326,12 +340,16 @@ function filterTasks(e) {
 	}
 }
 
+// *************************************************************************************
+// 
+// Get the elements by Id and store them in variables.
+// 
+// *************************************************************************************
 
-// Elements
-const addTaskTextInput = document.getElementById("addTaskTextInput");
-const addTaskPriorityOption = document.getElementById("addTaskPriorityOption");
-const addTaskButton = document.getElementById("addTaskButton");
+// Search field in the Navbar
+const searchBar = document.getElementById("searchBar");
 
+// Containers holding the tasks
 const activeHighPriorityContents = document.getElementById("activeHighPriorityContents");
 const activeMedPriorityContents = document.getElementById("activeMedPriorityContents");
 const activeLowPriorityContents = document.getElementById("activeLowPriorityContents");
@@ -339,23 +357,42 @@ const activeLowPriorityContents = document.getElementById("activeLowPriorityCont
 const doneHighPriorityContents = document.getElementById("doneHighPriorityContents");
 const doneMedPriorityContents = document.getElementById("doneMedPriorityContents");
 const doneLowPriorityContents = document.getElementById("doneLowPriorityContents");
+
+// Simple array of all the containers
 const priorityContents = [activeHighPriorityContents, doneHighPriorityContents,
 						  activeMedPriorityContents, doneMedPriorityContents,
 						  activeLowPriorityContents, doneLowPriorityContents];
 
-const searchBar = document.getElementById("searchBar");
+// Add Task Model elements
+const addTaskTextInput = document.getElementById("addTaskTextInput");
+const addTaskPriorityOption = document.getElementById("addTaskPriorityOption");
+const addTaskButton = document.getElementById("addTaskButton");
 
-// Event handlers
-addTaskButton.addEventListener("click", addTask);
 
+// *************************************************************************************
+// 
+// Register Event handlers
+// 
+// *************************************************************************************
+
+// Trigger whenever an enter is pressed or input is detected in the search field
 searchBar.addEventListener("input", filterTasks);
 searchBar.addEventListener("keypress", filterTasks);
+
+// Trigger this event when the add button is clicked
+addTaskButton.addEventListener("click", addTask);
+
+
+// *************************************************************************************
+// 
+// Initializer
+// 
+// *************************************************************************************
 
 // Necessary to initialize all popovers to work
 $(function () {
   $('[data-toggle="popover"]').popover()
 })
 
-
-// Load all tasks
+// Populate the page with all the available tasks.
 populateTasks();
