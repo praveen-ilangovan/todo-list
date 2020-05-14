@@ -284,7 +284,15 @@ function createTaskElement(task) {
 	textBox.appendChild(rowBox);
 	taskBox.appendChild(textBox);
 
-	// Create the text box container
+	// Make sure the task is hidden if the search field has some text matching
+	// the contents
+	taskBox.style.display = "block";
+	const searchBarText = searchBar.value.toLowerCase();
+	if (searchBarText && !task.text.toLowerCase().includes(searchBarText)) {
+		taskBox.style.display = "none";
+	}
+
+	// Create the Edit box container
 	let editBox = document.createElement("div");
 	editBox.className = "edit-task";
 
