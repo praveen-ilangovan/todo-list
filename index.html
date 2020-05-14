@@ -13,16 +13,24 @@
 	<!-- Material Design Bootstrap -->
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.16.0/css/mdb.min.css" rel="stylesheet">
 
+	<!-- Custom stylesheet for this project -->
 	<link rel="stylesheet" type="text/css" href="resources/css/style.css">
 </head>
 <body>
 
+	<!-- Navigation Bar -->
 	<nav class="navbar mb-5">
+		<!-- Title -->
 		<a class="navbar-brand">Todo's</a>
 
+		<!-- Right side form -->
 		<form class="d-flex justify-content-between align-items-center">
-			<a href="" title="" data-toggle="modal" data-target="#addTaskModal"><i class="fas fa-plus mr-4"></i></a>
-
+			<!-- Add a new task -->
+			<!-- Pops up a modal dialog and it is defined at the bottom of this file. -->
+			<a href="" title="" data-toggle="modal" data-target="#addTaskModal">
+				<i class="fas fa-plus mr-4"></i>
+			</a>
+			<!-- Search and filter task -->
 			<input id="searchBar" class="form-control form-control-sm" type="search" placeholder="Search" aria-label="Search">
 		</form>
 	</nav>
@@ -30,71 +38,106 @@
 
 	<!-- Top container -->
 	<div class="container">
+
+		<!-- 
+			Container to hold all the tasks.
+			They are grouped under different containers based on their priority and status
+		-->
 		<div class="priority-container d-lg-flex justify-content-between">
+
+			<!-- Container to hold the high priority tasks -->
 			<div id="highPriorityContainer" class="high-priority-container mb-3">
+
 				<h3>High</h3>
+
 				<div id="highPriorityContents">
+
+					<!-- Container to hold the active tasks, whose status is either Todo or InProgress -->
 					<div id="activeHighPriorityContents">
 
 					</div>
+
+					<!-- Container to hold the tasks that are completed -->
 					<div id="doneHighPriorityContents">
 						
 					</div>
-				</div>
-			</div>
 
+				</div> <!-- highPriorityContents -->
+			</div> <!-- highPriorityContainer -->
+
+			<!-- Container to hold the medium priority tasks -->
 			<div id="medPriorityContainer" class="med-priority-container mb-3">
+
 				<h3>Med</h3>
+
 				<div id="medPriorityContents">
+
+					<!-- Container to hold the active tasks, whose status is either Todo or InProgress -->
 					<div id="activeMedPriorityContents">
 						
 					</div>
+
+					<!-- Container to hold the tasks that are completed -->
 					<div id="doneMedPriorityContents">
 						
 					</div>
-				</div>
-			</div>
+				</div> <!-- medPriorityContents -->
+			</div> <!-- medPriorityContainer -->
 
+			<!-- Container to hold the low priority tasks -->
 			<div id="lowPriorityContainer" class="low-priority-container mb-3">
+
 				<h3>Low</h3>
+
 				<div id="lowPriorityContents">
+
+					<!-- Container to hold the active tasks, whose status is either Todo or InProgress -->
 					<div id="activeLowPriorityContents">
 						
 					</div>
+
+					<!-- Container to hold the tasks that are completed -->
 					<div id="doneLowPriorityContents">
 						
 					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+				</div> <!-- lowPriorityContents -->
+			</div> <!-- lowPriorityContainer -->
 
-	<!-- Modal -->
+		</div> <!-- priority-container -->
+	</div> <!-- container -->
 
-	<!-- Add task -->
+	<!-- Modals -->
+
+	<!-- Add task modal -->
 	<div class="modal fade" id="addTaskModal" tabindex="-1" role="dialog" aria-labelledby="addTaskModalLabel" aria-hidden="true">
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
+
 				<div class="modal-header">
+					<!-- Title -->
 					<h5 class="modal-title" id="addTaskModalLabel">Add Task</h5>
 
+					<!-- Close Button -->
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
+						<span aria-hidden="true">&times;</span>
 					</button>
 				</div>
 
 				<div class="modal-body">
 					<form action="index_submit" method="get" accept-charset="utf-8">
 
+						<!-- Alert the user if the task text is emtpy -->
 						<div id="addTaskAlert" class="alert alert-danger d-none">
 							<a href="#" class="close" data-dismiss="alert">&times;</a>
 							<strong>Error!</strong> Please describe your task.
 						</div>
 
+						<!-- Field to enter the task text -->
 						<input id="addTaskTextInput" class="form-control form-control-sm mb-3" type="text" name="" placeholder="What is your task?">
 
+						<!-- Dropdown to specify the priority of this task -->
 						<div class="form-group my-3">
-							<label for="addTaskPriorityOption">Set Priority:</label>
+							<label for="addTaskPriorityOption" class="form-label-font">Set Priority:</label>
 							<select class="form-control form-control-sm" id="addTaskPriorityOption">
 								<option>High</option>
 								<option>Med</option>
@@ -105,11 +148,13 @@
 				</div>
 
 				<div class="modal-footer">
+					<!-- Add button -->
 					<button type="button" class="btn btn-sm btn-primary" id="addTaskButton">Add</button>
 				</div>
-			</div>
-		</div>
-	</div>
+
+			</div> <!-- modal-content -->
+		</div> <!-- modal-dialog -->
+	</div> <!-- modal -->
 
 	<!-- MDB JS and JQuery -->
 	<!-- JQuery -->
@@ -121,7 +166,7 @@
 	<!-- MDB core JavaScript -->
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.16.0/js/mdb.min.js"></script>
 
-	<!-- Todo Js -->
+	<!-- Todo's Javascript -->
 	<script src="resources/js/main.js" type="text/javascript" charset="utf-8" async defer></script>
 
 </body>

@@ -311,6 +311,7 @@ function createTaskElement(task) {
 
 	let priorityLabel = document.createElement("label");
 	priorityLabel.innerHTML = "Change Priority";
+	priorityLabel.className = "form-label-font";
 
 	let priorityCbox = document.createElement("select");
 	priorityCbox.className = "form-control form-control-sm";
@@ -332,6 +333,7 @@ function createTaskElement(task) {
 
 	let statusLabel = document.createElement("label");
 	statusLabel.innerHTML = "Change Status";
+	statusLabel.className = "form-label-font";
 
 	let statusCbox = document.createElement("select");
 	statusCbox.className = "form-control form-control-sm";
