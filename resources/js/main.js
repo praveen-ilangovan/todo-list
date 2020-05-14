@@ -380,14 +380,29 @@ function populateTasks() {
 	}
 }
 
-function filterTasks(e) {
-	if (e.type == "keypress" && e.key === "Enter") {
-		e.preventDefault();
-		console.log(e.target);
-	} else if (e.type == "input") {
-		if (searchBar.value === "") {
-			console.log("Text cleared");
+function displayTasksWithMatchingText(text) {
+	for (const priorityContent of priorityContents) {
+		for (const taskBox of priorityContent.children) {
+			// If no text, just turn on the visibility of the task
+			if (!text) {
+				taskBox.style.display = "block";
+				continue;
+			}
+
+			const textContent = taskBox.children[0].children[0].children[0].textContent;
+			const display = textContent.toLowerCase().includes(text) ? "block" : "none";
+			taskBox.style.display = display;
 		}
+	}
+}
+
+function filterTasks(e) {
+	const enterPressed = e.type == "keypress" && e.key === "Enter";
+	const textCleared = e.type == "input" && searchBar.value === "";
+
+	if (enterPressed || textCleared) {
+		e.preventDefault();
+		displayTasksWithMatchingText(searchBar.value.toLowerCase());
 	}
 }
 
@@ -404,6 +419,9 @@ const activeLowPriorityContents = document.getElementById("activeLowPriorityCont
 const doneHighPriorityContents = document.getElementById("doneHighPriorityContents");
 const doneMedPriorityContents = document.getElementById("doneMedPriorityContents");
 const doneLowPriorityContents = document.getElementById("doneLowPriorityContents");
+const priorityContents = [activeHighPriorityContents, doneHighPriorityContents,
+						  activeMedPriorityContents, doneMedPriorityContents,
+						  activeLowPriorityContents, doneLowPriorityContents];
 
 const searchBar = document.getElementById("searchBar");
 
