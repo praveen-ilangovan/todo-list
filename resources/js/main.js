@@ -142,9 +142,6 @@ function taskDoubleClicked(e) {
 			i.setAttribute("selected", "true");
 		}
 	}
-
-	console.log(statusBox);
-	console.log(task.priority);
 }
 
 /**
@@ -247,6 +244,11 @@ function createTaskElement(task) {
 	taskBox.className = "card card-body task-box mb-3";
 	taskBox.id = taskBoxId
 	taskBox.classList.add(bg);
+
+	// If the task is inprogress
+	if (status === "inprogress") {
+		taskBox.classList.add("task-inprogress");
+	}
 
 	// Create the text box container
 	let textBox = document.createElement("div");

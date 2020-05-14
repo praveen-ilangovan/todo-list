@@ -12,4 +12,7 @@
   margin: 0;
   padding: 0; }
 
+.task-inprogress {
+  border-right: 10px #78AB46 solid; }
+
 /*# sourceMappingURL=style.css.map */

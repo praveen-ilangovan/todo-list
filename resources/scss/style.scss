@@ -8,3 +8,8 @@
 	margin: 0;
 	padding: 0;
 }
+
+// If a task is inprogress, highlight hte right side border of the task
+.task-inprogress {
+	border-right: 10px #78AB46 solid;
+}
