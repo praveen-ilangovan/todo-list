@@ -1,6 +1,147 @@
 import { Priority, Status, Task, TaskManager } from './modules/todo.js';
 
 /**
+ * DOM task element. A simple way to access Task's elements
+ *
+ */
+class TaskElement {
+
+	/**
+	 *
+	 * Recursively find parent until the task-box parent is found
+	 *
+	 */
+	static FindTopElement(element) {
+		let count = 0
+		while (true) {
+			if (element.classList.contains("task-box")) {
+				return element;
+			}
+
+			element = element.parentElement;
+			count++;
+
+			// Just a safety measure
+			if (count == 6) {
+				console.log("Tooo deeeep");
+				return
+			}
+		}
+	}
+
+	constructor(taskElement) {
+		this.taskElement = TaskElement.FindTopElement(taskElement);
+		this.taskId = this.taskElement.id.slice(5, this.taskElement.id.length);
+	}
+
+	// Getters
+	get textBox() {
+		return this.taskElement.children[0];
+	}
+
+	get deleteButton() {
+		return this.textBox.children[0].children[1];
+	}
+
+	get textContent() {
+		return this.taskElement.children[0].children[0].children[0].textContent;
+	}
+
+	set textContent(value) {
+		this.taskElement.children[0].children[0].children[0].textContent = value;
+	}
+
+	get editBox() {
+		return this.taskElement.children[1];
+	}
+
+	get textInputField() {
+		return this.editBox.children[0];
+	}
+
+	get priorityBox() {
+		return this.editBox.children[1].children[1];
+	}
+
+	get statusBox() {
+		return this.editBox.children[2].children[1];
+	}
+
+	// Functions
+
+	/**
+	 * Gee the task for this task element using its id
+	 */
+	getTask() {
+		return TaskManager.GetTask(this.taskId);
+	}
+
+	/**
+	 * Turn on the edit mode.
+	 *
+	 * Display the editBox and turn off the textBox
+	 * Update the fields with the task data.
+	 */
+	editModeOn() {
+		// In edit mode, turn off textBox and turn on Edit box
+		this.textBox.style.display = "none";
+		this.editBox.style.display = "block";
+
+		const task = this.getTask();
+
+		// Update the form values
+		this.textInputField.value = task.text;
+		// Update the Priority box
+		for (let i of this.priorityBox.children) {
+			i.removeAttribute("selected");
+			if (i.innerHTML.toLowerCase() === task.priority.toLowerCase()) {
+				i.setAttribute("selected", "true");
+			}
+		}
+		// Update the Status Box
+		for (let i of this.statusBox.children) {
+			i.removeAttribute("selected");
+			if (i.innerHTML.toLowerCase() === task.status.toLowerCase()) {
+				i.setAttribute("selected", "true");
+			}
+		}
+	}
+
+	/**
+	 * Turn off the edit mode. 
+	 */
+	editModeOff() {
+		this.textBox.style.display = "block";
+		this.editBox.style.display = "none";
+	}
+
+	/**
+	 * Turn off the visibilty of this element if the text
+	 * doesnt match the contents.
+	 *
+	 * @param {String} text
+	 */
+	displayIfTextMatches(text) {
+		// If no text, just turn on the visibility of the task
+		if (!text) {
+			this.taskElement.style.display = "block";
+			return;
+		}
+
+		const display = this.textContent.toLowerCase().includes(text) ? "block" : "none";
+		this.taskElement.style.display = display;
+	}
+
+}
+
+// *************************************************************************************
+// 
+// Create and Delete Elements
+// 
+// *************************************************************************************
+
+
+/**
  * Main function that receives a task and creates a task element
  *
  * @param {Task} task
@@ -166,11 +307,11 @@ function createTaskElement(task) {
 
 	// Add event handlers
 	delLink.addEventListener("click", deleteTask);
-	cancelButton.addEventListener("click", cancelEdit);
+	cancelButton.addEventListener("click", editModeCancelled);
 	updateButton.addEventListener("click", updateTask);
 	textBox.addEventListener("mouseenter", toggleDeleteOption);
 	textBox.addEventListener("mouseleave", toggleDeleteOption);
-	taskBox.addEventListener("dblclick", taskDoubleClicked);
+	taskBox.addEventListener("dblclick", editModeOn);
 
 	// Make sure the task is hidden if the search field has some text matching
 	// the contents
@@ -194,7 +335,19 @@ function deleteElement(element) {
 	container.removeChild(element);
 }
 
+// *************************************************************************************
 // 
+// Event Callbacks
+// 
+// *************************************************************************************
+
+// 
+// Nav Bar events
+// 
+
+/**
+ * Add a new task
+ */
 function addTask(e) {
 
 	if (!addTaskTextInput.value) {
@@ -213,130 +366,100 @@ function addTask(e) {
 }
 
 /**
- * When a task is double clicked, shows the edit form
+ * Filter the tasks based on the input in the Search Bar
  */
-function taskDoubleClicked(e) {
-	let textBox = e.currentTarget.children[0];
-	let editBox = e.currentTarget.children[1];
-	let textInput = editBox.children[0];
-	let priorityBox = editBox.children[1].children[1];
-	let statusBox = editBox.children[2].children[1];
-
-	textBox.style.display = "none";
-	editBox.style.display = "block";
-
-	let taskUid =  e.currentTarget.id.slice(5, e.currentTarget.id.length);
-	const task = TaskManager.GetTask(taskUid)
-
-	// Update the form values
-	textInput.value = task.text;
-	// 
-	for (let i of priorityBox.children) {
-		i.removeAttribute("selected");
-		if (i.innerHTML.toLowerCase() === task.priority.toLowerCase()) {
-			i.setAttribute("selected", "true");
-		}
-	}
-	// 
-	for (let i of statusBox.children) {
-		i.removeAttribute("selected");
-		if (i.innerHTML.toLowerCase() === task.status.toLowerCase()) {
-			i.setAttribute("selected", "true");
-		}
-	}
-}
-
-/**
- * Cancel the edit process.
- */
-function cancelEdit(e) {
-	const topParent = e.target.parentElement.parentElement.parentElement;
-	let textBox = topParent.children[0];
-	let editBox = topParent.children[1];
-
-	textBox.style.display = "block";
-	editBox.style.display = "none";
-}
-
-/**
- * Update the task
- */
-function updateTask(e) {
-	const topParent = e.target.parentElement.parentElement.parentElement;
-	let textBox = topParent.children[0];
-	let editBox = topParent.children[1];
-	let taskUid = topParent.id.slice(5, topParent.id.length);
-
-	let updatedText = editBox.children[0].value;
-	let updatedPriority = editBox.children[1].children[1].value;
-	let updatedStatus = editBox.children[2].children[1].value;
-
-	// before update
-	const task = TaskManager.GetTask(taskUid);
-	const oldPriority = task.priority;
-	const oldStatus = task.status;
-
-	// Update the localStorage
-	const updatedTask = TaskManager.UpdateTask(taskUid, updatedText,
-		updatedPriority, updatedStatus);
-
-	// if priority and status hasn't changed just update the text.
-	if (oldPriority === updatedPriority && oldStatus === updatedStatus) {
-		textBox.children[0].children[0].textContent = updatedText;
-		textBox.style.display = "block";
-		editBox.style.display = "none";
-	} else {
-		deleteElement(topParent);
-		createTaskElement(updatedTask);
-	}
-
-}
-
-
-
-function deleteTask(e) {
-	let topParent = e.target.parentElement.parentElement.parentElement.parentElement;
-	let taskUid = topParent.id.slice(5, topParent.id.length);
-
-	TaskManager.RemoveTask(taskUid);
-	deleteElement(topParent);
-}
-
-function toggleDeleteOption(e) {
-	e.target.children[0].children[1].style.display = e.type === "mouseenter" ? "block" : "none";
-}
-
-function populateTasks() {
-	const tasks = TaskManager.GetTasks();
-
-	for (const task of tasks) {
-		createTaskElement(task);
-	}
-}
-
-function displayTasksWithMatchingText(text) {
-	for (const priorityContent of priorityContents) {
-		for (const taskBox of priorityContent.children) {
-			// If no text, just turn on the visibility of the task
-			if (!text) {
-				taskBox.style.display = "block";
-				continue;
-			}
-
-			const textContent = taskBox.children[0].children[0].children[0].textContent;
-			const display = textContent.toLowerCase().includes(text) ? "block" : "none";
-			taskBox.style.display = display;
-		}
-	}
-}
-
 function filterTasks(e) {
 	const enterPressed = e.type == "keypress" && e.key === "Enter";
 	const textCleared = e.type == "input" && searchBar.value === "";
 
 	if (enterPressed || textCleared) {
 		e.preventDefault();
-		displayTasksWithMatchingText(searchBar.value.toLowerCase());
+		const searchBarText = searchBar.value.toLowerCase();
+
+		for (const priorityContent of priorityContents) {
+			for (const taskBox of priorityContent.children) {
+				let taskElement = new TaskElement(taskBox);
+				taskElement.displayIfTextMatches(searchBarText);
+			}
+		}
+	}
+}
+
+// 
+// Task Events
+// 
+
+/**
+ * When the mouse hovers over the task, display the delete button
+ */
+function toggleDeleteOption(e) {
+	let taskElement = new TaskElement(e.target);
+	taskElement.deleteButton.style.display = e.type === "mouseenter" ? "block" : "none";
+}
+
+/**
+ * Delete the task
+ */
+function deleteTask(e) {
+	let taskElement = new TaskElement(e.target);
+	deleteElement(taskElement.taskElement);
+}
+
+/**
+ * When a task is double clicked, shows the edit form
+ */
+function editModeOn(e) {
+	let taskElement = new TaskElement(e.currentTarget);
+	taskElement.editModeOn();
+}
+
+/**
+ * Cancel the edit process.
+ */
+function editModeCancelled(e) {
+	let taskElement = new TaskElement(e.target);
+	taskElement.editModeOff();
+}
+
+/**
+ * Update the task
+ */
+function updateTask(e) {
+	let taskElement = new TaskElement(e.target);
+	const task = taskElement.getTask();
+	const oldPriority = task.priority;
+	const oldStatus = task.status;
+
+	let updatedText = taskElement.textInputField.value;
+	let updatedPriority = taskElement.priorityBox.value;
+	let updatedStatus = taskElement.statusBox.value;
+
+	// Update the localStorage
+	const updatedTask = TaskManager.UpdateTask(taskElement.taskId,
+		updatedText, updatedPriority, updatedStatus);
+
+	// if priority and status hasn't changed just update the text.
+	if (oldPriority === updatedPriority && oldStatus === updatedStatus) {
+		taskElement.textContent = updatedText;
+		taskElement.editModeOff();
+	} else {
+		deleteElement(taskElement.taskElement);
+		createTaskElement(updatedTask);
+	}
+}
+
+// *************************************************************************************
+// 
+// Other Methods
+// 
+// *************************************************************************************
+
+/**
+ * Populate the webpage with all the available tasks
+ */
+function populateTasks() {
+	for (const task of TaskManager.GetTasks()) {
+		createTaskElement(task);
 	}
 }
 
