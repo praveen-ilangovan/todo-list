@@ -1,7 +1,7 @@
 # todo-list
 A simple todo-list manager written using HTML5, CSS, Bootstrap, SASS and vanilla Javascript
 
-![Sample Page](todo-list_01.png)
+![Sample Page](https://github.com/pilangovan/todo-list/blob/master/todo-list_01.PNG)
 
 ## Features
 * Click the + button to bring up the Add Task modal.
